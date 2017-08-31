@@ -11,7 +11,5 @@ def painFunction(f, x):
     plt.show()
 
 
-aaa
-
 x = np.linspace(-10, 10, 500)
 painFunction(mf.deltaSigmoid, x)
