@@ -6,10 +6,6 @@ def xNGram(sequernce, n):
     return nltk.ngrams(sequernce,n)
 
 
-def xTfidf():
-    pass
-
-
-seq=u"12345"
-for i in nltk.bigrams(seq):
+a="i want you"
+for i in nltk.ngrams(a,2):
     print i

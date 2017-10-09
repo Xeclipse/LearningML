@@ -11,5 +11,7 @@ def painFunction(f, x):
     plt.show()
 
 
-x = np.linspace(-10, 10, 500)
-painFunction(mf.deltaSigmoid, x)
+x = np.linspace(0, 30, 30)
+# painFunction(mf.SSigmoid, x)
+plt.scatter(x,mf.disLogSampler(x))
+plt.show()
