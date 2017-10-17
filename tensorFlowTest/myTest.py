@@ -23,23 +23,28 @@ outputDim = 1
 hiddenDim = 1
 
 
+def simpleNueralNetWork(x,y,inputDim=4, outputDim=1, hiddenDim =1):
+
+    w1 = tf.Variable(tf.random_normal(shape=[inputDim, hiddenDim]), name="weights1")
+    b1 = tf.Variable(tf.random_normal(shape=[hiddenDim]), name="bias1")
+    hiddenNode1 = tf.add(tf.matmul(x, w1), b1, name="layer1")
+
+    w2 = tf.Variable(tf.random_normal(shape=[hiddenDim, outputDim]), name="weights2")
+    b2 = tf.Variable(tf.random_normal(shape=[outputDim]), name="bias2")
+    ypred = tf.add(tf.matmul(hiddenNode1, w2), b2, name="pred")
+
+    loss = tf.reduce_mean(tf.pow(y - ypred, 2))
+    optimizer = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
+    return optimizer,loss
+
 x = tf.placeholder(dtype=tf.float32, shape=[None, inputDim], name="inputs")
 y = tf.placeholder(dtype=tf.float32, shape=[None, outputDim], name='pred')
-w1 = tf.Variable(tf.random_normal(shape=[inputDim, hiddenDim]), name="weights1")
-b1 = tf.Variable(tf.random_normal(shape=[hiddenDim]), name="bias1")
-hiddenNode1 = tf.add(tf.matmul(x, w1), b1, name="layer1")
-
-w2 = tf.Variable(tf.random_normal(shape=[hiddenDim, outputDim]), name="weights2")
-b2 = tf.Variable(tf.random_normal(shape=[outputDim]), name="bias2")
-ypred = tf.add(tf.matmul(hiddenNode1, w2), b2, name="pred")
-
-loss = tf.reduce_mean(tf.pow(y - ypred, 2))
-optimizer = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
-
+net,loss= simpleNueralNetWork(x,y)
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
-    for i in range(1000):
-        sess.run(optimizer, feed_dict={x: trainX, y: trainY})
+    for i in range(10):
+        sess.run(net, feed_dict={x: trainX, y: trainY})
         print sess.run(loss, feed_dict={x: trainX, y: trainY})
     print "\n"
-    print sess.run(ypred, feed_dict={x: trainX})
+#    print sess.run(ypred, feed_dict={x: trainX})
+#        tf.train.Saver.save(sess=sess, save_path="./model")
