@@ -10,15 +10,10 @@ def painFunction(f, x):
     plt.plot(x, f(x))
     plt.show()
 
-ratio = 0.9
-addOneDay=100
-x = range(50)
-y= []
-for i,v in enumerate(x):
-    if(i==0):
-        y.append(addOneDay)
-    else:
-        y.append(np.sqrt(y[i - 1] * ratio)+addOneDay)
+
+x=np.linspace(0,1,1000)
+y=1-np.sqrt(0.001/x)
+
 plt.plot(x, y)
 plt.show()
 #plt.scatter(x,mf.sigmoid(x))
