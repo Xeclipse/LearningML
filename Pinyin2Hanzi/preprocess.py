@@ -71,4 +71,14 @@ def indexFile(file, outfile, dicFile):
     dicWriter.close()
 
 # indexFile("../ResultData/formatSen.txt", "../ResultData/indexFormatSen.txt", "../ResultData/dicFormatSen.txt")
-indexFile("../ResultData/pinyinSen.txt", "../ResultData/indexPinyinSen.txt", "../ResultData/dicPinyinSen.txt")
+# indexFile("../ResultData/pinyinSen.txt", "../ResultData/indexPinyinSen.txt", "../ResultData/dicPinyinSen.txt")
+
+def generateSparseMatrixAandB(hiddenStateFile, observationFile):
+    f=open(hiddenStateFile)
+    hiddenSeq = [l.split(' ') for l in f.readlines()]
+    f.close()
+
+    A={}
+    B={}
+
+    return A,B
