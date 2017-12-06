@@ -1,0 +1,2 @@
+model_checkpoint_path: "/Users/nali/PycharmProjects/LearningML/SpamFilter/save/conv2/spam.cnn"
+all_model_checkpoint_paths: "/Users/nali/PycharmProjects/LearningML/SpamFilter/save/conv2/spam.cnn"
