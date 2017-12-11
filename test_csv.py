@@ -89,7 +89,7 @@ result = pd.DataFrame(columns=['content', 'predicted'])
 result['content'] = test_content
 result['predicted'] = predicted.tolist()
 #print result.head()
-result.to_csv("test.csv", encoding="utf-8")
+result.to_csv("dict.csv", encoding="utf-8")
 
 
 

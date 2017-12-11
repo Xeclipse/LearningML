@@ -45,7 +45,7 @@ def simpleNueralNetWork(inputDim, outputDim, hiddenDim=1):
 
 with tf.Session() as sess:
     net = simpleNueralNetWork(4, 1)
-    writer = tf.summary.FileWriter('/Users/nali/PycharmProjects/LearningML/tensorFlowTest/tensorBoard/test')
+    writer = tf.summary.FileWriter('/Users/nali/PycharmProjects/LearningML/tensorFlowTest/tensorBoard/dict')
     writer.add_graph(graph=sess.graph)
     # x = tf.get_default_graph().get_tensor_by_name("inputs:0")
     # y = tf.get_default_graph().get_tensor_by_name("pred:0")

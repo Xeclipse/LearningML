@@ -19,7 +19,7 @@ mnist = input_data.read_data_sets('MNIST_data/', one_hot=True)
 
 # %%
 # mnist is now a DataSet with accessors for:
-# 'train', 'test', and 'validation'.
+# 'train', 'dict', and 'validation'.
 # within each, we can access:
 # images, labels, and num_examples
 print(mnist.train.num_examples,
@@ -95,7 +95,7 @@ for epoch_i in range(n_epochs):
                        y_true: mnist.validation.labels
                    }))
 
-# %% Print final test accuracy:
+# %% Print final dict accuracy:
 print(sess.run(accuracy,
                feed_dict={
                    net_input: mnist.test.images,
@@ -115,6 +115,6 @@ model.compile(loss='categorical_crossentropy',
     optimizer=SGD(lr=learning_rate))
 model.fit(mnist.train.images, mnist.train.labels, nb_epoch=n_epochs,
           batch_size=batch_size, show_accuracy=True)
-objective_score = model.evaluate(mnist.test.images, mnist.test.labels,
+objective_score = model.evaluate(mnist.dict.images, mnist.dict.labels,
                                  batch_size=100, show_accuracy=True)
 """

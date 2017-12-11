@@ -13,7 +13,7 @@ from matplotlib import pyplot as plt
 
 
 
-file=open("../preprocess/test")
+file=open("../preprocess/dict")
 text=file.readlines()
 toknizer=prep.Tokenizer()
 toknizer.fit_on_texts(texts=text)

@@ -61,7 +61,7 @@ def autoencoder(dimensions=[784, 512, 256, 64]):
     return {'x': x, 'z': z, 'y': y, 'cost': cost}
 
 
-# %% Basic test
+# %% Basic dict
 def test_mnist():
     """Test the autoencoder using MNIST."""
     import tensorflow as tf
