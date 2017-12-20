@@ -294,8 +294,8 @@ paramFromSaver = {
     "getOperationNames": {
         "optimizer": graphName + "/optimizer/adam_optimizer",
     },
-    "iteration": 48,
-    "startIteration": 2,
+    "iteration": 20,
+    "startIteration": 100,
     "senDim": 40
 }
 
@@ -307,20 +307,27 @@ dic = textProcess.loadDict('/Users/nali/PycharmProjects/LearningML/SpamFilter/Da
 rev = textProcess.reverseDic(dic)
 X, Y, dic = preprocess.generateTestData(nospam, dic, 40)
 X2, Y2, dic = preprocess.generateTestData(spam, dic, 40)
-X3, Y3, dic = preprocess.generateTestData(test, dic, 40)
+# X3, Y3, dic = preprocess.generateTestData(test, dic, 40)
 # textProcess.saveDict(dic, '/Users/nali/PycharmProjects/LearningML/SpamFilter/Data/dict')
 X.extend(X2)
 Y.extend(Y2)
-X.extend(X3)
-Y.extend(Y3)
+# X.extend(X3)
+# Y.extend(Y3)
 X, Y = preprocess.shuffleData(X, Y)
 print np.sum(Y, 0)
 
-runFromSaver(param=paramFromSaver, X_data=X, Y_data=Y, batchSize=10000)
+# runFromSaver(param=paramFromSaver, X_data=X, Y_data=Y, batchSize=10000)
 # runStartGraph(param=paramStart, X_data=X, Y_data=Y, vocabDim= dic.__len__()+2, batchSize= 10000)
-# ypred = predict(param=paramFromSaver,X_data= X, Y_data=Y)
-# x = X
-# y = Y
-# for i, v in enumerate(ypred):
-#     if np.argmax(v) != np.argmax(y[i]):
-#         print y[i], '\t', textProcess.id2String(x[i], rev)
+ypred = predict(param=paramFromSaver,X_data= X, Y_data=Y)
+x = X
+y = Y
+for i, v in enumerate(ypred):
+    if np.argmax(v) != np.argmax(y[i]):
+        if y[i][0] == 1:
+            print textProcess.id2String(x[i], rev)
+
+print "-"*100
+for i, v in enumerate(ypred):
+    if np.argmax(v) != np.argmax(y[i]):
+        if y[i][0] == 0:
+            print textProcess.id2String(x[i], rev)

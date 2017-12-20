@@ -8,6 +8,8 @@ import numpy as np
 def sigmoid(x, w=-1.0, b=1.0):
     return 1.0 / (1 + np.exp(w * x + b))
 
+def StirlingApproximation(n):
+    return np.sqrt(2 * np.pi) * np.power(n, n + 0.5) / np.exp(n)
 
 # sigmoid 导数
 def deltaSigmoid(x):

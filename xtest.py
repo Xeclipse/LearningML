@@ -6,5 +6,8 @@ import jieba
 import pandas
 from collections import Counter
 import math
+import numpy as np
 
-print int(math.ceil(1.0*20/3))
+
+def StirlingApproximation(n):
+    return np.sqrt(2 * np.pi) * np.power(n, n + 0.5) / np.exp(n)

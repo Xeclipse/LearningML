@@ -1,14 +1,11 @@
 # coding:utf-8
-
+import pickle
 
 
 # sentences=[
 #     [word, word,...]
 #     [word, word, ...]
 # ]
-import pickle
-
-
 def indexText(sentences, dic):
     indexedText = []
     for sen in sentences:
@@ -20,7 +17,7 @@ def indexText(sentences, dic):
 # sentence = [ word, word, word ]
 # 0: padding
 # 1: unknown
-def indexSentence(sentence, dic, addDict = True, unknownIndex = 1):
+def indexSentence(sentence, dic, addDict=True, unknownIndex=1):
     count = dic.__len__() + 2
     indexSen = []
     try:
@@ -32,7 +29,8 @@ def indexSentence(sentence, dic, addDict = True, unknownIndex = 1):
                         dic[word] = count
                         count += 1
                     else:
-                        indexSen.append(unknownIndex)
+                        if unknownIndex > 0:
+                            indexSen.append(unknownIndex)
                 else:
                     indexSen.append(dic[word])
             except:
@@ -71,12 +69,41 @@ def id2String(data, dic):
         if i in dic:
             str += dic[i]
         else:
-            str +='$UNC$'
+            str += '$UNC$'
     return str
 
+
 def saveDict(dic, file):
-    with open(file,'w') as f:
+    with open(file, 'w') as f:
         pickle.dump(dic, f)
+
+
 def loadDict(file):
     with open(file) as f:
         return pickle.load(f)
+
+
+def saveItems(items, file, splitTag='\t'):
+    with open(file, 'w') as fw:
+        for i, v in items:
+            try:
+                fw.write(i+ splitTag + str(v) + '\n')
+            except:
+                print i
+        fw.close()
+
+
+def loadItems(file, splitTag='\t'):
+    items = []
+    with open(file) as f:
+        for l in f.readlines():
+            ele = l.strip().split(splitTag)
+            items.append((ele[0], ele[1]))
+        f.close()
+    return items
+
+def items2Dic(items):
+    ret={}
+    for i,v in items:
+        ret[i]=v
+    return ret
