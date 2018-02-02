@@ -12,7 +12,7 @@ import jieba
 def getfeature(str):
     feature = ""
     # 分字
-    # 分词  #获取拼音
+    #Todo: 分词, 获取拼音, 字形码
     result = jieba.cut(str.strip())
     for r in result:
         feature = feature + r + " "
@@ -26,8 +26,8 @@ def getfeature(str):
 
 
 def rawText():
-    f = open("./Data/search-filter-spam.log")
-    output = open("./Data/search-filter-spam.format", 'w')
+    f = open("./SpamFilter/Data/search-filter-spam.log")
+    output = open("./SpamFilter/Data/search-filter-spam.format", 'w')
     data = []
     count = 0
     while 1:

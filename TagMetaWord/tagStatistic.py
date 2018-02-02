@@ -181,11 +181,11 @@ def genRelatedWord(metaDic, wordDic, docFile):
 # tp.saveDict(relatedTabel, "./Data/relatedWordMap.dic")
 # print "finish"
 
-relatedMap=tp.loadDict("./Data/relatedWordMap.dic")
+relatedMap = tp.loadDict("./Data/relatedWordMap.dic")
 while 1:
     meta = raw_input("meta:")
     dic = relatedMap[meta]
     diclen = len(dic)
     for i in dic:
-        if 1.0*dic[i]/diclen>=0.01:
-            print i,dic[i]
+        if 1.0 * dic[i] / diclen >= 0.01:
+            print i, dic[i]

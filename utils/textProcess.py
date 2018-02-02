@@ -6,10 +6,10 @@ import pickle
 #     [word, word,...]
 #     [word, word, ...]
 # ]
-def indexText(sentences, dic):
+def indexText(sentences, dic, addDict=True):
     indexedText = []
     for sen in sentences:
-        indexedSen, dic = indexSentence(sen, dic)
+        indexedSen, dic = indexSentence(sen, dic, addDict)
         indexedText.append(indexedSen)
     return indexedText, dic
 
@@ -17,6 +17,7 @@ def indexText(sentences, dic):
 # sentence = [ word, word, word ]
 # 0: padding
 # 1: unknown
+# if unkonwn index is less than 1, than the unknon symbol would NOT be added into index sentence
 def indexSentence(sentence, dic, addDict=True, unknownIndex=1):
     count = dic.__len__() + 2
     indexSen = []
@@ -107,3 +108,20 @@ def items2Dic(items):
     for i,v in items:
         ret[i]=v
     return ret
+
+
+def genRelationFromSentence(tagList, sentence, model=None):
+    if model is None:
+        model = {}
+    for i in tagList:
+        if i not in model:
+            subdic = {}
+            model[i] = subdic
+        else:
+            subdic = model[i]
+        for w in sentence:
+            try:
+                subdic[w] += 1
+            except:
+                subdic[w] = 1
+    return model

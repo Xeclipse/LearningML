@@ -47,18 +47,22 @@ with tf.Session() as sess:
     net = simpleNueralNetWork(4, 1)
     writer = tf.summary.FileWriter('/Users/nali/PycharmProjects/LearningML/tensorFlowTest/tensorBoard/dict')
     writer.add_graph(graph=sess.graph)
-    # x = tf.get_default_graph().get_tensor_by_name("inputs:0")
-    # y = tf.get_default_graph().get_tensor_by_name("pred:0")
-    # sess.run(tf.global_variables_initializer())
-    # for i in range(10):
-    #     sess.run(net["optimizer"], feed_dict={x: trainX, y: trainY})
-    #     ans = sess.run(net["loss"], feed_dict={x: trainX, y: trainY})
-    #     print ans
-    # ans = sess.run(net["predict"],  feed_dict={x: trainX})
-    # print ans
-    # saver = tf.train.Saver()
-    # saver.save(sess,'./save/model.nn')
-    # sess.close()
+    x = tf.get_default_graph().get_tensor_by_name("simpleNeural/inputs:0")
+    y = tf.get_default_graph().get_tensor_by_name("simpleNeural/pred:0")
+    sess.run(tf.global_variables_initializer())
+    for i in range(10):
+        sess.run(net["optimizer"], feed_dict={x: trainX, y: trainY})
+        ans = sess.run(net["loss"], feed_dict={x: trainX, y: trainY})
+        print ans
+    ans = sess.run(net["predict"],  feed_dict={x: trainX})
+    print ans
+    saver = tf.train.Saver()
+    saver.save(sess,'./save/model.nn')
+
+    graph = tf.graph_util.convert_variables_to_constants(sess = sess, input_graph_def=sess.graph_def, output_node_names=["simpleNeural/layer/predict"])
+    tf.train.write_graph(graph, './', 'graph.pb', as_text=False)
+
+    sess.close()
 
 
 # saver = tf.train.import_meta_graph("./save/model.nn.meta")
