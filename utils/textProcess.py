@@ -125,3 +125,47 @@ def genRelationFromSentence(tagList, sentence, model=None):
             except:
                 subdic[w] = 1
     return model
+
+
+def sortDicByKeyAndReindex(dic, startIndex = 0):
+    its = dic.items()
+    its = sorted(its, key=lambda x: x[0])
+    count = startIndex
+    sortedDic = {}
+    for i in its:
+        sortedDic[i[0]] = count
+        count += 1
+    return sortedDic
+
+#实现一个类似于bucket的padding操作, PS:会改变传入的实参
+def batchPadding(all):
+    for i in range(len(all)):
+        maxBatchLen = max([len(k) for k in all[i]])
+        for k in range(len(all[i])):
+            all[i][k] = padding(all[i][k], maxBatchLen)
+
+
+def oneHotALabel(label, maxLabelId, onValue=1.0, offValue = 0.0):
+    ret =[0] * (maxLabelId+1)
+    if type(label) is list:
+        for i in label:
+            ret[int(i)] = onValue
+    else:
+        ret[int(label)] = onValue
+    return ret
+
+
+def oneHotLabels(labels, maxLabelId = None, onValue=1.0, offValue = 0.0):
+    if maxLabelId is None:
+        try:
+            try:
+                maxList = [max(k) for k in labels if len(k)>0]
+            except Exception as e:
+                print e.message
+            maxLabelId = max( maxList )
+        except:
+            maxLabelId = max(labels)
+    ret = []
+    for i in labels:
+        ret.append(oneHotALabel(i, maxLabelId, onValue, offValue))
+    return ret

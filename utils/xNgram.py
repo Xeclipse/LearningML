@@ -32,19 +32,19 @@ def statictic(sentens):
     return nltk.TextCollection(sw), BigramCollocationFinder.from_documents(sw)
 
 
-# 词表使用demo
-s = ["我想听喜马拉雅FM", "这个世界很美好！", "奥特曼打小怪兽你"]
-sta, bcf = statictic(s)
-# sta.plot()
-# print sta.vocab().items()
-# 词表
-for i in sta.vocab().items():
-    print i[0], ":", i[1]
-
-
-xiang = "想".decode("utf-8")
-ting = "听".decode("utf-8")
-# 某个单词出现次数
-print sta.count(xiang)
-# bigram model
-print 1.0 * bcf.ngram_fd[(xiang,ting)] / bcf.word_fd[xiang]
+# # 词表使用demo
+# s = ["我想听喜马拉雅FM", "这个世界很美好！", "奥特曼打小怪兽你"]
+# sta, bcf = statictic(s)
+# # sta.plot()
+# # print sta.vocab().items()
+# # 词表
+# for i in sta.vocab().items():
+#     print i[0], ":", i[1]
+#
+#
+# xiang = "想".decode("utf-8")
+# ting = "听".decode("utf-8")
+# # 某个单词出现次数
+# print sta.count(xiang)
+# # bigram model
+# print 1.0 * bcf.ngram_fd[(xiang,ting)] / bcf.word_fd[xiang]
