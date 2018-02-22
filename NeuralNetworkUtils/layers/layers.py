@@ -58,11 +58,25 @@ def dropout_layer(value):
         return dropout
 
 
-def optimize_op(value, rate = 0.01):
+def optimize_op(value, name = 'adagard',rate = 0.01):
     with tf.name_scope("optimizer"):
-        adam = tf.train.AdagradOptimizer(learning_rate=rate)
-        return adam.minimize(value, name='adam_optimizer')
+        optimizer = None
+        if name =='adagard':
+            optimizer = tf.train.AdagradOptimizer(learning_rate=rate)
+        if name =='adam':
+            optimizer = tf.train.AdamOptimizer(learning_rate=rate)
+        if name == 'adadelta':
+            optimizer = tf.train.AdadeltaOptimizer(learning_rate=rate)
+        if name == 'rmsprop':
+            optimizer = tf.train.RMSPropOptimizer(learning_rate=rate)
+        if name == 'adam':
+            optimizer = tf.train.AdamOptimizer(learning_rate=rate)
+        return optimizer.minimize(value, name=name+'_optimizer')
 
+def optimize_op_rsrp(value, rate = 0.01):
+    with tf.name_scope("optimizer"):
+        rsrp = tf.train.RMSPropOptimizer(learning_rate=rate)
+        return rsrp.minimize(value, name='rsrp_optimizer')
 
 def flatten(value, flattenShape):
     with tf.name_scope("flatten"):
@@ -88,6 +102,15 @@ def cost_loss(ypred, y):
         tf.summary.scalar(name="cost_loss", tensor=loss)
         return loss
 
+def cost_loss_multi(ypred, y, weightOne =5.0):
+    with tf.name_scope("loss"):
+        sub = ypred - y
+        weight =  tf.scalar_mul(weightOne, y)
+        weightPow2 = tf.multiply(tf.multiply(sub, sub), weight)
+        L2 = tf.reduce_sum(input_tensor=weightPow2, axis=1)
+        loss = tf.reduce_mean(L2, name='cost_loss')
+        tf.summary.scalar(name="cost_loss", tensor=loss)
+        return loss
 
 def cross_entropy_loss(ypred, y):
     with tf.name_scope("loss"):
@@ -107,7 +130,7 @@ def conv_flatten_dense_layer(value, filtersize, nFilter, stride, channels, outdi
 
 def square_loss(ypred, y):
     with tf.name_scope("loss"):
-        cost = tf.reduce_mean(tf.reduce_sum(tf.multiply( (y-ypred), (y-ypred)),axis=1), name="square_loss")
+        cost = tf.reduce_mean(tf.reduce_sum(tf.multiply( (y-ypred), (y-ypred)), axis=1), name="square_loss")
         tf.summary.scalar(name="square_loss", tensor=cost)
         return cost
 

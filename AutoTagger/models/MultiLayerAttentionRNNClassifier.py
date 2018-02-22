@@ -16,7 +16,7 @@ def genToyData():
     return X, Y, lengths
 
 
-class AlbumTextClassifier:
+class MultiAlbumTextClassifier:
     def __init__(self):
         self.displayStep = 1
         self.numUnits = 21
@@ -32,22 +32,15 @@ class AlbumTextClassifier:
             "title": self.graphName + '/inputsTitle:0',
             "intro": self.graphName + '/inputsIntro:0',
             'y': self.graphName + '/outputs:0',
-            # 'predTag': self.graphName + '/attention_layer_2/dense/tagsPredict:0',
-            # 'predTitle': self.graphName + '/attention_layer_1/dense/titlePredict:0',
-            # 'predIntro': self.graphName + '/attention_layer/dense/introPredict:0',
             'predMixed': self.graphName + '/dense/mixedPredict:0',
-            # 'lossTag': self.graphName + '/loss_2/square_loss:0',
-            # 'lossTitle': self.graphName + '/loss_1/square_loss:0',
-            # 'lossIntro': self.graphName + '/loss/square_loss:0',
             'lossMixed': self.graphName + '/loss/square_loss:0',
             'standardLoss': self.graphName + '/loss_1/cost_loss:0',
-            # 'loss': self.graphName + '/totalLoss:0'
         }
         self.opByName={
             "optimizer": self.graphName+'/optimizer/adam_optimizer'
         }
 
-    def attention_layer(self, value, hiddenUnits, numLabels, name):
+    def attention_layer(self, value, hiddenUnits, name):
         # todo:finish this network and build a class
         with tf.name_scope("attention_layer"):
             # y = tf.placeholder(dtype=tf.float32, shape=[None, self.numLabels], name="outputs"
@@ -58,39 +51,45 @@ class AlbumTextClassifier:
                 with tf.variable_scope("rnn_attention_variable", reuse=False):
                     attentionCell = LSTMCell(num_units=1, initializer=tf.truncated_normal_initializer)
                     attentions, lastAttentionState = layer.dynamicRnnLayer(outputs, attentionCell)
-            attentionEmbedding = tf.matmul(attentions, outputs, transpose_a=True)
-            squeeze = tf.squeeze(attentionEmbedding,axis=1)
-            return squeeze
+            batch = tf.shape(value)[0]
+            attentionsRepeat = tf.ones(shape=[batch,1,hiddenUnits])
+            attentionMatrix = tf.matmul( attentions,attentionsRepeat)
+            attentionEmbeddings = tf.multiply(attentionMatrix, outputs)
+            return attentionEmbeddings
 
     def createModel(self):
         with tf.name_scope(self.graphName):
             x1 = tf.placeholder(dtype=tf.int32, shape=[None, None], name="inputsTag")
             x2 = tf.placeholder(dtype=tf.int32, shape=[None, None], name="inputsTitle")
-            # x3 = tf.placeholder(dtype=tf.int32, shape=[None, None], name="inputsIntro")
             y = tf.placeholder(dtype=tf.float32, shape=[None, self.numLabels], name="outputs")
             intialembedding = tf.random_normal(shape=[self.vocabDim, self.vecDim], mean=0.0, stddev=0.1)
             embeddingTable = tf.Variable(intialembedding,name='embeddingTable')
-                #weight_variable([self.vocabDim, self.vecDim])
             tf.summary.histogram(name='embedding', values=embeddingTable)
 
             embeddingTag = tf.nn.embedding_lookup(embeddingTable, x1, max_norm=1.0)
             embeddingTitle = tf.nn.embedding_lookup(embeddingTable, x2, max_norm=1.0)
-            # embeddingIntro = tf.nn.embedding_lookup(embeddingTable, x3, max_norm=1.0)
+            titleEmbeddings = self.attention_layer(value=embeddingTitle, hiddenUnits=100,
+                                                name="titleEmbedding")
+            tagEmbeddings = self.attention_layer(value=embeddingTag, hiddenUnits=100,
+                                               name="tagsEmbedding")
 
-            # introEmbedding = self.attention_layer(value=embeddingTag, hiddenUnits=100, numLabels=self.numLabels,
-            #                                     name="introPredict")
-            titleEmbedding = self.attention_layer(value=embeddingTitle, hiddenUnits=100, numLabels=self.numLabels,
-                                                name="titlePredict")
-            tagEmbedding = self.attention_layer(value=embeddingTag, hiddenUnits=100, numLabels=self.numLabels,
-                                               name="tagsPredict")
+
+            titleEmbedding = tf.reduce_mean(titleEmbeddings, axis=1)
+            tagEmbeddings2 = self.attention_layer(value=tagEmbeddings,hiddenUnits=100, name="higher_embedding")
+            tagEmbedding = tf.reduce_mean(tagEmbeddings2, axis=1)
+
+
             concat = tf.concat([ titleEmbedding, tagEmbedding], 1)#introEmbedding
             mixedPredict = layer.dense_layer(concat, weightShape=[100 * 2, self.numLabels],
                                              outputShape=[self.numLabels], name="mixedPredict")
 
             standardLoss = layer.square_loss(mixedPredict, y)
             lossMixed = layer.cost_loss_multi(mixedPredict, y)+standardLoss
-            optimizer = layer.optimize_op(lossMixed,name ='adam', rate=0.01)
+            optimizer = layer.optimize_op(lossMixed,name ='adam', rate=0.1)
             return {'optimizer': optimizer, 'lossMixed': lossMixed, 'predMixed':mixedPredict, 'standardLoss':standardLoss}
+
+
+
 
     # X should be an albums features
     # X = [

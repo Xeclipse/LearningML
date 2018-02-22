@@ -138,9 +138,10 @@ def sortDicByKeyAndReindex(dic, startIndex = 0):
     return sortedDic
 
 #实现一个类似于bucket的padding操作, PS:会改变传入的实参
-def batchPadding(all):
+#maxPaddingLen表示最长的padding距离
+def batchPadding(all, maxPaddingLen =100):
     for i in range(len(all)):
-        maxBatchLen = max([len(k) for k in all[i]])
+        maxBatchLen = min([max([len(k) for k in all[i]]), maxPaddingLen])
         for k in range(len(all[i])):
             all[i][k] = padding(all[i][k], maxBatchLen)
 
