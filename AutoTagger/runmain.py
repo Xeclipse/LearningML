@@ -53,12 +53,12 @@ from AutoTagger.models.AttentionRNNClassifier import AlbumTextClassifier
 #     albums = pickle.dump(Y,f)
 # from utils.textProcess import padding
 #
-with open('./Data/trainX') as f:
-    X = pickle.load(f)
-with open('./Data/trainY') as f:
-    Y = pickle.load(f)
-print 'finish loading '
-Y = tp.oneHotLabels(Y)
+# with open('./Data/trainX') as f:
+#     X = pickle.load(f)
+# with open('./Data/trainY') as f:
+#     Y = pickle.load(f)
+# print 'finish loading '
+# Y = tp.oneHotLabels(Y)
 dic = tp.loadDict('./Data/dictionaries/ch2index')
 atc = MultiAlbumTextClassifier()
 atc.displayStep = 0
@@ -67,7 +67,7 @@ atc.tensorBoardPath = "./Record/TensorBoard/TestTrial"
 atc.modelPath = "./Record/modelRecord/testModel.rnn"
 atc.vocabDim = len(dic) + 2
 atc.numLabels = 221
-atc.train(X, Y, False, 100, 500, startStep=54)
+# atc.train(X, Y, False, 100, 500, startStep=54)
 
 
 # title = u"回到大明当才子"
@@ -75,9 +75,9 @@ atc.train(X, Y, False, 100, 500, startStep=54)
 # metas = u"回到大明当才子,奇幻,有声小说,穿越,言情"
 
 
-# title = u"凤临天下：王妃十三岁"
-# intro = u"她是冷面无敌的雇佣兵首领，一着穿越成为十三岁小王妃。他是帝国的绝色王爷，铁血冷酷，威震天下。天下风云涌动，七国争霸，群雄逐鹿，她与他金戈铁马、血腥沙场，一路平雪圣，扫傲国，吞陈国，灭后金，并南宋，夺赵国，完成称霸天下，一统七国的霸业。大婚典礼上，冥岛的半个月之约，却又将他们卷进一场惊天的阴谋中。他与她率万千船只扬帆起航，炸敌营、渡洛河、斩雪蛇、过迷阵，一路步步惊心，等待他们的又是怎样惊心动魄的迷局？ 乌龙穿越，废材晋升武术天才，　小虾米变身大白鲨，请务必小心谨慎！ 　　身为世界第一的佣兵首脑，竟然因为撞上车门而灵魂穿越，附身在天辰国慕容大将军庶出的孙女——慕容琉月身上！？这要是传出去，真会笑掉人家的大牙！ 　　不过，这场乌龙穿越好像也不全然是坏事，至少目前对她来说，是极具挑战性的——"
-# metas = u"穿越,言情,王妃,奇幻,暖心"
+title = u"凤临天下：王妃十三岁"
+intro = u"她是冷面无敌的雇佣兵首领，一着穿越成为十三岁小王妃。他是帝国的绝色王爷，铁血冷酷，威震天下。天下风云涌动，七国争霸，群雄逐鹿，她与他金戈铁马、血腥沙场，一路平雪圣，扫傲国，吞陈国，灭后金，并南宋，夺赵国，完成称霸天下，一统七国的霸业。大婚典礼上，冥岛的半个月之约，却又将他们卷进一场惊天的阴谋中。他与她率万千船只扬帆起航，炸敌营、渡洛河、斩雪蛇、过迷阵，一路步步惊心，等待他们的又是怎样惊心动魄的迷局？ 乌龙穿越，废材晋升武术天才，　小虾米变身大白鲨，请务必小心谨慎！ 　　身为世界第一的佣兵首脑，竟然因为撞上车门而灵魂穿越，附身在天辰国慕容大将军庶出的孙女——慕容琉月身上！？这要是传出去，真会笑掉人家的大牙！ 　　不过，这场乌龙穿越好像也不全然是坏事，至少目前对她来说，是极具挑战性的——"
+metas = u"穿越,言情,王妃,奇幻,暖心"
 
 # title = u"谁都别惹我作者张小花播讲有一头熊"
 # intro = u"顺序已经调好 抱歉了 各位 四大天王掉下来了、吕洞宾掉下来了、李靖和哪吒掉下来了、七仙女掉下来了、阎王爷掉下来了…… 我在街边摊套了一个布娃娃会说话，它说它是天界娃娃，要吸取人间喜怒哀乐愁，还钦命我为第一帮凶…… 我是甄廷强，我很烦，你们谁都别惹我！ ......"
@@ -96,20 +96,20 @@ atc.train(X, Y, False, 100, 500, startStep=54)
 # intro = u"驱魔人第一季·你是谁014 驱魔人第二季·迷城017 驱魔人第三季·无间永生021 驱魔人第四季·鬼影023 驱魔人第五季·秘密060 驱魔人第六季·迷城042 驱魔人第七季·阴童037 驱魔人第八季·赌神026 驱魔人第十季·沉默的羔羊016"
 # metas = u"恐怖,有声小说,畅销书,驱魔人,鬼故事"
 #
-# meta2id = tp.loadDict('./Data/dictionaries/meta2index')
-# id2Meta = tp.reverseDic(meta2id)
-#
-# title, dic = tp.indexSentence(title, dic, addDict=False)
-# intro, dic = tp.indexSentence(intro, dic, addDict=False)
-# intro = tp.padding(intro, 100)
-# metas, dic = tp.indexSentence(metas, dic, addDict=False)
-# X = []
-# X.append([metas])
-# X.append([title])
-# X.append([intro])
-# res = atc.predict(X=X)
-# res =res[0][0]
-# for id, prob in enumerate(res):
-#     if prob>0:
-#         print id2Meta[id],':',prob
-# print '-'*30
+meta2id = tp.loadDict('./Data/dictionaries/meta2index')
+id2Meta = tp.reverseDic(meta2id)
+
+title, dic = tp.indexSentence(title, dic, addDict=False)
+intro, dic = tp.indexSentence(intro, dic, addDict=False)
+intro = tp.padding(intro, 100)
+metas, dic = tp.indexSentence(metas, dic, addDict=False)
+X = []
+X.append([metas])
+X.append([title])
+X.append([intro])
+res = atc.predict(X=X)
+res =res[0][0]
+for id, prob in enumerate(res):
+    if prob>0.8:
+        print id2Meta[id],':',prob
+print '-'*30

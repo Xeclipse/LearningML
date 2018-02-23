@@ -1,4 +1,6 @@
 import tensorflow as tf
+from tensorflow.python.ops.rnn_cell_impl import LSTMCell
+
 from tensorFlowTest.libs.utils import weight_variable, bias_variable
 
 
@@ -56,6 +58,21 @@ def dropout_layer(value):
     with tf.name_scope("dropout"):
         dropout = tf.nn.dropout(x=value, keep_prob=1.0)
         return dropout
+
+def attention_layer(value, hiddenUnits, name):
+    with tf.name_scope("attention_layer"):
+        with tf.variable_scope("rnn_attention_" + name, reuse=False):
+            with tf.variable_scope("rnn_encoder_variable", reuse=False):
+                cell = LSTMCell(num_units=hiddenUnits, initializer=tf.truncated_normal_initializer)
+                outputs, lastStates = dynamicRnnLayer(value, cell)
+            with tf.variable_scope("rnn_attention_variable", reuse=False):
+                attentionCell = LSTMCell(num_units=1, initializer=tf.truncated_normal_initializer)
+                attentions, lastAttentionState = dynamicRnnLayer(outputs, attentionCell)
+        batch = tf.shape(value)[0]
+        attentionsRepeat = tf.ones(shape=[batch,1,hiddenUnits])
+        attentionMatrix = tf.matmul( attentions,attentionsRepeat)
+        attentionEmbeddings = tf.multiply(attentionMatrix, outputs)
+        return attentionEmbeddings
 
 
 def optimize_op(value, name = 'adagard',rate = 0.01):
