@@ -88,7 +88,7 @@ def saveItems(items, file, splitTag='\t'):
     with open(file, 'w') as fw:
         for i, v in items:
             try:
-                fw.write(i+ splitTag + str(v) + '\n')
+                fw.write(str(i)+ splitTag + str(v) + '\n')
             except:
                 print i
         fw.close()

@@ -1,8 +1,7 @@
 import tensorflow as tf
 from tensorflow.python.ops.rnn_cell_impl import LSTMCell
-
 from tensorFlowTest.libs.utils import weight_variable, bias_variable
-
+from tensorflow.python.ops import math_ops
 
 def embedding_layer(value, vocabDim, vecDim):
     with tf.name_scope("embedding"):
@@ -44,11 +43,11 @@ def conv_1d_layer(value, filterSize, nFilter, stride, channels):
         return hidden
 
 
-def softmax_layer(value, inputShape, outputShape):
+def softmax_layer(value, inputShape, outputShape, name = None):
     with tf.name_scope("softmax"):
         wSoftmax = weight_variable(shape=inputShape)
         bSoftmax = bias_variable(shape=outputShape)
-        ypred = tf.nn.softmax(tf.matmul(value, wSoftmax) + bSoftmax, name='ypred')
+        ypred = tf.nn.softmax(tf.matmul(value, wSoftmax) + bSoftmax, name=name)
         tf.summary.histogram(name='softmaxW', values=wSoftmax)
         tf.summary.histogram(name='softmaxB', values=bSoftmax)
         return ypred
@@ -68,12 +67,22 @@ def attention_layer(value, hiddenUnits, name):
             with tf.variable_scope("rnn_attention_variable", reuse=False):
                 attentionCell = LSTMCell(num_units=1, initializer=tf.truncated_normal_initializer)
                 attentions, lastAttentionState = dynamicRnnLayer(outputs, attentionCell)
-        batch = tf.shape(value)[0]
-        attentionsRepeat = tf.ones(shape=[batch,1,hiddenUnits])
-        attentionMatrix = tf.matmul( attentions,attentionsRepeat)
-        attentionEmbeddings = tf.multiply(attentionMatrix, outputs)
+
+        #normAttention = l1_normalize(attentions,dim=1)
+        # batch = tf.shape(value)[0]
+        # attentionsRepeat = tf.ones(shape=[batch,1,hiddenUnits])
+        # attentionMatrix = tf.matmul( normAttention,attentionsRepeat)
+        # attentionEmbeddings = tf.multiply(attentionMatrix, outputs)
+        attentionEmbeddings = tf.multiply(outputs, attentions)
         return attentionEmbeddings
 
+
+def l1_normalize(value, dim=1, epsilon=1e-12, name=None):
+    with tf.name_scope("l1_normalize"):
+        valuesum = tf.reduce_sum(value,dim,keep_dims=True)
+        inv_norm = tf.reciprocal(math_ops.maximum(valuesum, epsilon))
+        normalize = tf.multiply(value, inv_norm, name=name)
+        return normalize
 
 def optimize_op(value, name = 'adagard',rate = 0.01):
     with tf.name_scope("optimizer"):
@@ -119,10 +128,10 @@ def cost_loss(ypred, y):
         tf.summary.scalar(name="cost_loss", tensor=loss)
         return loss
 
-def cost_loss_multi(ypred, y, weightOne =5.0):
+def cost_loss_multi(ypred, y, weightOne =2.0):
     with tf.name_scope("loss"):
         sub = ypred - y
-        weight =  tf.scalar_mul(weightOne, y)
+        weight =  tf.add(tf.scalar_mul(weightOne, y),1)
         weightPow2 = tf.multiply(tf.multiply(sub, sub), weight)
         L2 = tf.reduce_sum(input_tensor=weightPow2, axis=1)
         loss = tf.reduce_mean(L2, name='cost_loss')
@@ -134,6 +143,8 @@ def cross_entropy_loss(ypred, y):
         cost = -tf.reduce_mean(y * tf.log(ypred), name="cross_entropy")
         tf.summary.scalar(name="cross_entropy", tensor=cost)
         return cost
+
+
 
 
 def conv_flatten_dense_layer(value, filtersize, nFilter, stride, channels, outdim):
@@ -151,7 +162,7 @@ def square_loss(ypred, y):
         tf.summary.scalar(name="square_loss", tensor=cost)
         return cost
 
-def dynamicRnnLayer(value, cell, lengths = None):
+def dynamicRnnLayer(value, cell, lengths = None, name=None):
     with tf.name_scope("RNN"):
         if lengths is not None:
             return tf.nn.dynamic_rnn(cell=cell, inputs=value, sequence_length=lengths, dtype=tf.float32)

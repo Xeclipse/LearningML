@@ -1,28 +1,20 @@
 # coding:utf-8
 
 
-import nltk
-import jieba
-import pandas
-from collections import Counter
-import math
-import numpy as np
+import NeuralNetworkUtils.layers.layers as la
 import tensorflow as tf
 
-# def StirlingApproximation(n):
-#     return np.sqrt(2 * np.pi) * np.power(n, n + 0.5) / np.exp(n)
+
+# x = tf.placeholder(tf.float32,shape=[None, 2])
+# y = tf.placeholder(tf.float32, shape=[None,2])
+# ret = la.softmax_layer(x,inputShape=[2,10],outputShape=[10])
 #
-# print StirlingApproximation(12)
-# from utils import mathFunction
-from SpamFilter import preprocess
-from utils import textProcess
+# X = [[1.0,1.0], [0.0,0.0]]
+# Y = [[1.0,1.0], [0.0,1.0]]
+#
+# with tf.Session() as sess:
+#     sess.run(tf.global_variables_initializer())
+#     print sess.run(ret, feed_dict={x:X, y:Y})
 
-# preprocess.rawText()
-
-a = 10
-b = 20
-a = a ^ b
-b = a ^ b
-a = a ^ b
-
-print a,b
+import numpy as np
+print 1/15.0

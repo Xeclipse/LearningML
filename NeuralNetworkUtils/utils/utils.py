@@ -32,5 +32,6 @@ def split2Batches(batchSize, X, Y):
         start = batchSize * i
         end = min([batchSize * (i + 1), len(X)])
         batchX.append(X[start:end])
-        batchY.append(Y[start:end])
+        if Y is not None:
+            batchY.append(Y[start:end])
     return batchX, batchY, batchNum
